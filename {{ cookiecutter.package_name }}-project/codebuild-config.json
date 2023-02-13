@@ -1,0 +1,11 @@
+{
+    "jobs": [
+        {
+            "project_name": "{{ cookiecutter.package_name }}-project",
+            "is_batch_job": false,
+            "buildspec": "",
+            "env_var": {
+            }
+        }
+    ]
+}
