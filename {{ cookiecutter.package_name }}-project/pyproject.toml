@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "{{ cookiecutter.package_name }}"
-version = "0.2.2"
+version = "0.1.1"
 description = "A sample AWS Lambda Python project with production ready set up"
 authors = ["{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>"]
 
