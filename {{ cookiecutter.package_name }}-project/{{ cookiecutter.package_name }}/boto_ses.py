@@ -13,7 +13,7 @@ if IS_LAMBDA:  # put production first
     )
 elif IS_LOCAL:
     bsm = BotoSesManager(
-        profile_name="aws_data_lab_travelers",
+        profile_name="my_profile",
         region_name="us-east-1",
     )
 elif IS_CI:
