@@ -1,5 +1,5 @@
 {
-    "package": "my_package",
+    "package_name": "my_package",
     "author_name": "Firstname Lastname",
     "author_email": "firstname.lastname@email.com"
 }
