@@ -14,7 +14,7 @@ class Logger(NestedLogger):
     ):
         return self.pretty_log(
             start_msg=f"{Emoji.start_timer} {start_emoji} {msg}",
-            end_msg=f"{Emoji.end_timer} {end_emoji} End '{msg}', elapsed = {{ '{{' {{ '}}' }}elapsed:.2f{{ '}}' }} sec",
+            end_msg=f"{Emoji.end_timer} {end_emoji} End '{msg}', elapsed = {% raw %}{{{% endraw %}elapsed:.2f{% raw %}}}{% endraw %} sec",
             pipe=pipe,
         )
 
