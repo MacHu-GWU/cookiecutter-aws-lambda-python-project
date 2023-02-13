@@ -9,7 +9,7 @@ Enter the following command:
     pip install cookiecutter
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-aws-lambda-python-project
 
-Then fill in some information:
+Then fill in some information::
 
     package_name [my_package]: ...
     author_name [Firstname Lastname]: ...
