@@ -28,6 +28,10 @@ This module implements the Git branch strategy related automation.
 
 import os
 import subprocess
+from aws_codecommit import (
+    ConventionalCommitParser,
+    is_certain_semantic_commit,
+)
 
 from .paths import dir_project_root, temp_current_dir
 from .runtime import IS_LOCAL, IS_CI
@@ -106,6 +110,11 @@ def is_feature_branch(git_branch: str) -> bool:
     return git_branch.startswith("feat") or git_branch.startswith("feature")
 
 
+def is_int_branch(git_branch: str) -> bool:
+    git_branch = git_branch.lower()
+    return git_branch.startswith("int")
+
+
 def is_release_branch(git_branch: str) -> bool:
     git_branch = git_branch.lower()
     return git_branch.startswith("rls") or git_branch.startswith("release")
@@ -140,12 +149,14 @@ def is_ecr_branch(git_branch: str) -> bool:
 
 if IS_LOCAL:
     GIT_COMMIT_ID: str = get_git_commit_id_from_git_cli()
+    GIT_COMMIT_MESSAGE: str = ""
     GIT_BRANCH_NAME: str = get_git_branch_from_git_cli()
     PR_FROM_BRANCH_NAME: str = ""
     PR_TO_BRANCH_NAME: str = ""
     GIT_EVENT: str = ""
 elif IS_CI:
     GIT_COMMIT_ID: str = os.environ.get("CI_DATA_COMMIT_ID", "")
+    GIT_COMMIT_MESSAGE: str = os.environ.get("CI_DATA_COMMIT_MESSAGE", "")
     GIT_BRANCH_NAME: str = os.environ.get("CI_DATA_BRANCH_NAME", "")
     PR_FROM_BRANCH_NAME: str = os.environ.get("CI_DATA_PR_FROM_BRANCH", "")
     PR_TO_BRANCH_NAME: str = os.environ.get("CI_DATA_PR_TO_BRANCH", "")
@@ -161,6 +172,7 @@ def print_git_info():
 
 IS_MASTER_BRANCH: bool = is_master_branch(GIT_BRANCH_NAME)
 IS_FEATURE_BRANCH: bool = is_feature_branch(GIT_BRANCH_NAME)
+IS_INT_BRANCH: bool = is_int_branch(GIT_BRANCH_NAME)
 IS_RELEASE_BRANCH: bool = is_release_branch(GIT_BRANCH_NAME)
 IS_CLEAN_UP_BRANCH: bool = is_cleanup_branch(GIT_BRANCH_NAME)
 IS_CF_BRANCH: bool = is_cf_branch(GIT_BRANCH_NAME)
@@ -174,3 +186,28 @@ IS_PR_TARGET_MASTER_BRANCH: bool = is_master_branch(PR_TO_BRANCH_NAME)
 IS_PR_SOURCE_CF_BRANCH: bool = is_cf_branch(PR_FROM_BRANCH_NAME)
 IS_PR_SOURCE_LAYER_BRANCH: bool = is_layer_branch(PR_FROM_BRANCH_NAME)
 IS_PR_SOURCE_LAMBDA_BRANCH: bool = is_lambda_branch(PR_FROM_BRANCH_NAME)
+
+
+# ------------------------------------------------------------------------------
+# use git commit message to identify what to clean up
+# the commit message has to be ${stub}: ${description}
+# ------------------------------------------------------------------------------
+COMMIT_MESSAGE_HAS_CF: bool = False
+COMMIT_MESSAGE_HAS_LBD: bool = False
+if IS_CLEAN_UP_BRANCH:
+    commit_parser = ConventionalCommitParser(types=["cf", "lbd"])
+    has_cf_commit = is_certain_semantic_commit(
+        GIT_COMMIT_MESSAGE, stub="cf", parser=commit_parser
+    )
+    has_lbd_commit = is_certain_semantic_commit(
+        GIT_COMMIT_MESSAGE, stub="lbd", parser=commit_parser
+    )
+    if has_lbd_commit:
+        COMMIT_MESSAGE_HAS_LBD = True
+        if has_cf_commit:
+            COMMIT_MESSAGE_HAS_CF = True
+
+    if has_cf_commit is True and has_lbd_commit is False:
+        raise ValueError(
+            "You have to delete Lambda App first then you can delete CloudFormation Stack!"
+        )

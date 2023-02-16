@@ -19,4 +19,7 @@ class Logger(NestedLogger):
         )
 
 
-logger = Logger(name="automation")
+logger = Logger(
+    name="automation",
+    log_format="%(message)s",
+)

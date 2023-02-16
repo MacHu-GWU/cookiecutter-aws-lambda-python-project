@@ -42,7 +42,7 @@ try:
         "iam_role_arn": output.iam_role_lambda_arn,
         "manage_iam_role": False,
         "layers": [
-            "arn:aws:lambda:us-east-1:931365232219:layer:{{ cookiecutter.package_name }}:3",
+            "arn:aws:lambda:{{ cookiecutter.aws_region }}:{{ cookiecutter.aws_account_id }}:layer:{{ cookiecutter.package_name }}:1",
         ],
         "environment_variables": {
             "PARAMETER_NAME": config.dev.parameter_name,
@@ -67,7 +67,7 @@ try:
         "iam_role_arn": output.iam_role_lambda_arn,
         "manage_iam_role": False,
         "layers": [
-            "arn:aws:lambda:us-east-1:931365232219:layer:{{ cookiecutter.package_name }}:3",
+            "arn:aws:lambda:{{ cookiecutter.aws_region }}:{{ cookiecutter.aws_account_id }}:layer:{{ cookiecutter.package_name }}:1",
         ],
         "environment_variables": {
             "PARAMETER_NAME": config.int.parameter_name,
@@ -92,7 +92,7 @@ try:
         "iam_role_arn": output.iam_role_lambda_arn,
         "manage_iam_role": False,
         "layers": [
-            "arn:aws:lambda:us-east-1:931365232219:layer:{{ cookiecutter.package_name }}:3",
+            "arn:aws:lambda:{{ cookiecutter.aws_region }}:{{ cookiecutter.aws_account_id }}:layer:{{ cookiecutter.package_name }}:1",
         ],
         "environment_variables": {
             "PARAMETER_NAME": config.prod.parameter_name,

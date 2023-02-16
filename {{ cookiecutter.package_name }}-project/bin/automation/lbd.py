@@ -47,19 +47,24 @@ from .pyproject import pyproject
 from .runtime import IS_CI
 from .git import (
     GIT_BRANCH_NAME,
-    IS_MASTER_BRANCH,
     IS_LAYER_BRANCH,
     IS_LAMBDA_BRANCH,
+    IS_INT_BRANCH,
     IS_RELEASE_BRANCH,
     IS_CLEAN_UP_BRANCH,
-    IS_PR_MERGE_EVENT,
-    IS_PR_SOURCE_LAMBDA_BRANCH,
-    IS_PR_TARGET_MASTER_BRANCH,
+    COMMIT_MESSAGE_HAS_LBD,
 )
 from .env import CURRENT_ENV
 from .logger import logger
 from .emoji import Emoji
 from .helpers import sha256_of_bytes
+from .deps import _try_poetry_export
+from .lbd_rule import (
+    do_we_build_lambda_layer as _do_we_build_lambda_layer,
+    do_we_publish_lambda_layer,
+    do_we_deploy_lambda as _do_we_deploy_lambda,
+    do_we_delete_lambda,
+)
 
 
 # ------------------------------------------------------------------------------
@@ -89,14 +94,19 @@ def is_current_layer_the_same_as_latest_one() -> bool:
     Compare the local version of the requirements and the S3 backup of the
     latest layer requirements.
     """
+    # check if there is a lambda layer exists
     latest_layer_version = get_latest_lambda_layer_version()
     if latest_layer_version is None:
         return False
+
+    # get the s3 backup of the latest layer requirements
     s3path_lambda_layer_requirements_txt = (
         config.env.get_s3path_lambda_layer_requirements_txt(
             version=latest_layer_version
         )
     )
+
+    # compare
     return (
         path_requirements_main.read_text()
         == s3path_lambda_layer_requirements_txt.read_text()
@@ -104,18 +114,15 @@ def is_current_layer_the_same_as_latest_one() -> bool:
 
 
 def do_we_build_lambda_layer() -> bool:
-    if IS_CI:  # in CI, we only build layer from layer branch
-        if IS_LAYER_BRANCH:
-            pass
-        else:
-            logger.info(
-                f"{Emoji.red_circle} don't build Lambda layer, "
-                f"we only build layer from CI environment on layer branch, "
-                f"now we are on {GIT_BRANCH_NAME!r} branch."
-            )
-            return False
-    else:  # always allow build layer on local
-        pass
+    if (
+        _do_we_build_lambda_layer(
+            is_ci_runtime=IS_CI,
+            branch_name=GIT_BRANCH_NAME,
+            is_layer_branch=IS_LAYER_BRANCH,
+        )
+        is False
+    ):
+        return False
 
     if is_current_layer_the_same_as_latest_one():
         logger.info(
@@ -126,26 +133,6 @@ def do_we_build_lambda_layer() -> bool:
         return False
     else:
         return True
-
-
-def do_we_publish_lambda_layer() -> bool:
-    if IS_CI:
-        if IS_LAYER_BRANCH:
-            return True
-        else:
-            logger.info(
-                f"{Emoji.red_circle} don't publish layer, "
-                f"we only publish layer from CI environment on layer branch, "
-                f"now we are on {GIT_BRANCH_NAME!r} branch."
-            )
-            return False
-    else:
-        logger.info(
-            f"{Emoji.red_circle} don't publish layer, "
-            f"we only publish layer from CI environment, "
-            f"now we are on local development environment."
-        )
-        return False
 
 
 @logger.block(
@@ -160,6 +147,8 @@ def build_lambda_layer_artifacts():
     on Mac, some C library may not work in AWS Lambda, which is an
     Amazon Linux based container.
     """
+    _try_poetry_export()
+
     # remove existing artifacts and temp folder
     path_build_lambda_layer_zip.unlink(missing_ok=True)
     shutil.rmtree(f"{dir_build_lambda_python}", ignore_errors=True)
@@ -308,7 +297,7 @@ def publish_lambda_layer() -> T.Optional[str]:
     )
     s3dir_tmp_lambda_layer_zip.copy_to(
         s3path_lambda_layer_zip,
-        overwrite=False, # we don't overwrite existing layer artifacts
+        overwrite=False,  # we don't overwrite existing layer artifacts
     )
     s3dir_tmp_lambda_layer_requirements_txt.copy_to(
         s3path_lambda_layer_requirements_txt,
@@ -352,7 +341,11 @@ def deploy_lambda_layer():
         else:
             return
 
-        if do_we_publish_lambda_layer():
+        if do_we_publish_lambda_layer(
+            is_ci_runtime=IS_CI,
+            branch_name=GIT_BRANCH_NAME,
+            is_layer_branch=IS_LAYER_BRANCH,
+        ):
             upload_lambda_layer_artifacts()
             publish_lambda_layer()
             logger.info(f"{Emoji.succeeded} Deploy Lambda layer succeeded!")
@@ -425,33 +418,6 @@ def is_current_lambda_the_same_as_deployed_one(lambda_function_hash: str) -> boo
         return False
 
 
-def do_we_deploy_lambda_based_on_git() -> bool:
-    if IS_CI:
-        if IS_PR_MERGE_EVENT:
-            if IS_PR_TARGET_MASTER_BRANCH and IS_PR_SOURCE_LAMBDA_BRANCH:
-                return True
-            else:
-                logger.info(
-                    f"{Emoji.red_circle} don't deploy lambda app, "
-                    f"it is a PR merge event, but it is not a merge "
-                    f"from lambda branch to master branch.",
-                )
-                return False
-        else:
-            if IS_MASTER_BRANCH or IS_LAMBDA_BRANCH or IS_RELEASE_BRANCH:
-                return True
-            else:
-                logger.info(
-                    f"{Emoji.red_circle} don't deploy lambda app, "
-                    f"we only deploy lambda app from CI environment on "
-                    f"master, lambda or release branch, "
-                    f"now we are on {GIT_BRANCH_NAME!r} branch.",
-                )
-                return False
-    else:  # always allow that deploy lambda from local
-        return True
-
-
 def do_we_deploy_lambda_based_on_hash(lambda_function_hash: str) -> bool:
     """
     :param lambda_function_hash: a sha256 hash value represent the local lambda source code
@@ -475,6 +441,7 @@ def do_we_deploy_lambda_based_on_hash(lambda_function_hash: str) -> bool:
 def build_lambda_source_artifacts():
     logger.info("build lambda source artifacts ...")
     shutil.rmtree(f"{dir_dist}", ignore_errors=True)
+    _try_poetry_export()
     with temp_current_dir(dir_project_root):
         # option 1: use setup.py,
         # I have more control with python setup.py build
@@ -496,10 +463,12 @@ def build_lambda_source_artifacts():
     logger.info("done", indent=1)
 
 
-def download_deployed_json(env_name: str):
+def download_deployed_json(env_name: str) -> bool:
     """
     AWS Chalice use JSON file to store the deployed resource information.
     We use S3 to store this JSON file.
+
+    :return: a boolean flag to indicate that if the deployed JSON exists on S3
     """
     logger.info(f"download existing deployed {env_name}.json file")
     path_deployed_json = dir_lambda_app_deployed / f"{env_name}.json"
@@ -513,8 +482,10 @@ def download_deployed_json(env_name: str):
         )
         dir_lambda_app_deployed.mkdir(parents=True, exist_ok=True)
         path_deployed_json.write_text(s3path_deployed_json.read_text())
+        return True
     else:
         logger.info("no existing deployed json file found, skip download", indent=1)
+        return False
 
 
 def upload_deployed_json(
@@ -695,15 +666,26 @@ def deploy_lambda_app(
 ):
     try:
         if check:
-            if do_we_deploy_lambda_based_on_git() is False:
+            if (
+                _do_we_deploy_lambda(
+                    env_name=env_name,
+                    is_ci_runtime=IS_CI,
+                    branch_name=GIT_BRANCH_NAME,
+                    is_lambda_branch=IS_LAMBDA_BRANCH,
+                    is_int_branch=IS_INT_BRANCH,
+                    is_release_branch=IS_RELEASE_BRANCH,
+                )
+                is False
+            ):
                 return
         run_update_chalice_config_script()
         lambda_function_hash = get_lambda_function_hash()
         if check:
             if do_we_deploy_lambda_based_on_hash(lambda_function_hash) is False:
                 return
-        build_lambda_source_artifacts()
-        run_chalice_deploy(env_name, lambda_function_hash)
+        with logger.nested():
+            build_lambda_source_artifacts()
+            run_chalice_deploy(env_name, lambda_function_hash)
         logger.info(f"{Emoji.succeeded} Deploy Lambda app succeeded!")
     except Exception as e:
         logger.error(f"{Emoji.failed} Deploy Lambda app failed!")
@@ -724,20 +706,6 @@ def deploy_lambda_app(
         raise e
 
 
-def do_we_delete_lambda(env_name: str = CURRENT_ENV) -> bool:
-    """
-    Check if we should delete Lambda App.
-    """
-    if IS_CLEAN_UP_BRANCH:
-        return True
-    else:
-        logger.info(
-            f"{Emoji.red_circle} don't delete Lambda App, "
-            f"we only delete Lambda App from a 'cleanup' branch"
-        )
-        return False
-
-
 @logger.block(
     msg="Run Chalice Delete",
     start_emoji=f"{Emoji.delete} {Emoji.awslambda}",
@@ -747,9 +715,14 @@ def do_we_delete_lambda(env_name: str = CURRENT_ENV) -> bool:
 def run_chalice_delete(env_name: str):
     """
     Delete lambda app using chalice.
+
+    :return: a boolean flag to indicate that if delete is successful.
     """
     # download existing deployed json file, if possible
-    download_deployed_json(env_name)
+    flag = download_deployed_json(env_name)
+    if flag is False:
+        logger.info("the deployed json file is not found, skip 'chalice delete ...'")
+        return False
 
     # run chalice delete command
     logger.info("run 'chalice delete ...' command")
@@ -800,6 +773,7 @@ def run_chalice_delete(env_name: str):
                 in_reply_to=comment_id,
                 content=content,
             )
+    return True
 
 
 @logger.block(
@@ -814,9 +788,19 @@ def delete_lambda_app(
 ):
     try:
         if check:
-            if do_we_delete_lambda() is False:
+            if (
+                do_we_delete_lambda(
+                    env_name=env_name,
+                    is_ci_runtime=IS_CI,
+                    is_clean_up_branch=IS_CLEAN_UP_BRANCH,
+                    commit_message_has_lbd=COMMIT_MESSAGE_HAS_LBD,
+                )
+                is False
+            ):
                 return
-        run_chalice_delete(env_name)
+        run_update_chalice_config_script()
+        with logger.nested():
+            run_chalice_delete(env_name)
         logger.info(f"{Emoji.succeeded} Delete Lambda app succeeded!")
     except Exception as e:
         logger.error(f"{Emoji.failed} Delete Lambda app failed!")
@@ -834,4 +818,3 @@ def delete_lambda_app(
                     content=content,
                 )
         raise e
-

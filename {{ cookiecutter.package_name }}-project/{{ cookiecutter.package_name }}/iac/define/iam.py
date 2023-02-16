@@ -36,19 +36,6 @@ class IamMixin:
             ),
         }
 
-        stat_parameter_store = {
-            "Effect": "Allow",
-            "Action": "ssm:GetParameter",
-            "Resource": cf.Sub(
-                string="arn:aws:ssm:${aws_region}:${aws_account_id}:parameter/${parameter_name}",
-                data=dict(
-                    aws_region=cf.AWS_REGION,
-                    aws_account_id=cf.AWS_ACCOUNT_ID,
-                    parameter_name=self.env.parameter_name,
-                ),
-            ),
-        }
-
         stat_s3_bucket_read = {
             "Effect": "Allow",
             "Action": [
@@ -83,7 +70,13 @@ class IamMixin:
             rp_AssumeRolePolicyDocument=cf.helpers.iam.AssumeRolePolicyBuilder(
                 cf.helpers.iam.ServicePrincipal.awslambda(),
             ).build(),
-            p_RoleName=self.env.iam_role_name_lambda,
+            p_RoleName=cf.Sub(
+                string="${prefix}-${aws_region}-lambda",
+                data=dict(
+                    prefix=self.env.prefix_name_snake,
+                    aws_region=cf.AWS_REGION,
+                )
+            ),
             p_ManagedPolicyArns=[
                 cf.helpers.iam.AwsManagedPolicy.AWSLambdaBasicExecutionRole,
             ],
@@ -106,7 +99,13 @@ class IamMixin:
 
         self.iam_inline_policy_for_lambda = iam.Policy(
             "IamInlinePolicyForLambda",
-            rp_PolicyName=f"{self.env.prefix_name_snake}-lambda",
+            rp_PolicyName=cf.Sub(
+                string="${prefix}-${aws_region}-lambda",
+                data=dict(
+                    prefix=self.env.prefix_name_snake,
+                    aws_region=cf.AWS_REGION,
+                )
+            ),
             rp_PolicyDocument={"Version": "2012-10-17", "Statement": statement},
             p_Roles=[
                 self.iam_role_for_lambda.ref(),

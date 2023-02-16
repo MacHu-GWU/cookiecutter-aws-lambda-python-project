@@ -1,23 +1,23 @@
 {
     "shared": {
         "project_name": "{{ cookiecutter.package_name }}",
-        "s3uri_artifacts": "s3://111122223333-us-east-1-artifacts/projects/{{ cookiecutter.package_name }}/"
+        "s3uri_artifacts": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-artifacts/projects/{{ cookiecutter.package_name }}/"
     },
     "envs": {
         "dev": {
             "username": "dev.user",
-            "s3uri_source": "s3://111122223333-us-east-1-data/projects/{{ cookiecutter.package_name }}/dev/source/",
-            "s3uri_target": "s3://111122223333-us-east-1-data/projects/{{ cookiecutter.package_name }}/dev/target/"
+            "s3uri_source": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-data/projects/{{ cookiecutter.package_name }}/dev/source/",
+            "s3uri_target": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-data/projects/{{ cookiecutter.package_name }}/dev/target/"
         },
         "int": {
             "username": "int.user",
-            "s3uri_source": "s3://111122223333-us-east-1-data/projects/{{ cookiecutter.package_name }}/int/source/",
-            "s3uri_target": "s3://111122223333-us-east-1-data/projects/{{ cookiecutter.package_name }}/int/target/"
+            "s3uri_source": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-data/projects/{{ cookiecutter.package_name }}/int/source/",
+            "s3uri_target": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-data/projects/{{ cookiecutter.package_name }}/int/target/"
         },
         "prod": {
             "username": "prod.user",
-            "s3uri_source": "s3://111122223333-us-east-1-data/projects/{{ cookiecutter.package_name }}/prod/source/",
-            "s3uri_target": "s3://111122223333-us-east-1-data/projects/{{ cookiecutter.package_name }}/prod/target/"
+            "s3uri_source": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-data/projects/{{ cookiecutter.package_name }}/prod/source/",
+            "s3uri_target": "s3://{{ cookiecutter.aws_account_id }}-{{ cookiecutter.aws_region }}-data/projects/{{ cookiecutter.package_name }}/prod/target/"
         }
     }
 }

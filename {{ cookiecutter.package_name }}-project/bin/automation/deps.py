@@ -267,7 +267,7 @@ def _poetry_export(current_poetry_lock_hash: str):
 
 
 @logger.block(
-    msg="Export resolved dependency to requirements-***.txt file",
+    msg="Export resolved dependencies to req-***.txt file",
     start_emoji=Emoji.install,
     end_emoji=Emoji.install,
     pipe=Emoji.install,
@@ -298,6 +298,7 @@ def _quite_pip_install_in_ci(args: T.List[str]):
     We only need to disable ``pip install`` output in CI, because we don't
     want to see long list of installation messages in CI.
     """
+    args.append("--disable-pip-version-check")
     if IS_CI:
         args.append("--quiet")
 
@@ -322,17 +323,13 @@ def pip_install():
     """
     _try_poetry_export()
 
-    subprocess.run(
-        [f"{bin_pip}", "install", "-e", f"{dir_project_root}", "--no-deps"],
-        check=True,
-    )
+    args = [f"{bin_pip}", "install", "-e", f"{dir_project_root}", "--no-deps"]
+    _quite_pip_install_in_ci(args)
+    subprocess.run(args, check=True)
 
     args = [f"{bin_pip}", "install", "-r", f"{path_requirements_main}"]
     _quite_pip_install_in_ci(args)
-    subprocess.run(
-        args,
-        check=True,
-    )
+    subprocess.run(args, check=True)
 
 
 @logger.block(
@@ -430,7 +427,7 @@ def pip_install_automation():
 
 
 @logger.block(
-    msg="Install all dependencies for dev, test, doc, automation",
+    msg="Install all dependencies",
     start_emoji=Emoji.install,
     end_emoji=Emoji.install,
     pipe=Emoji.install,

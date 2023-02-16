@@ -16,8 +16,8 @@ phases:
       python: 3.8
     commands:
       # install necessary dependencies to global python to run the automation scripts
-      - pip install poetry==1.2.2 --quiet
-      - pip install -r requirements-automation.txt --quiet
+      - pip install poetry==1.2.2 --quiet --disable-pip-version-check
+      - pip install -r requirements-automation.txt --quiet --disable-pip-version-check
       - python ./bin/s99_1_install_phase.py
   pre_build:
     commands:

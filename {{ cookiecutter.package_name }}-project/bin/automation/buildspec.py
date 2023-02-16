@@ -5,7 +5,9 @@ from .logger import logger
 from .emoji import Emoji
 
 # actions
-from .venv import virtualenv_venv_create
+from .venv import (
+    virtualenv_venv_create,
+)
 from .deps import (
     poetry_export,
     pip_install,
@@ -13,7 +15,10 @@ from .deps import (
     pip_install_test,
     pip_install_automation,
 )
-from .tests import run_cov_test, run_int_test
+from .tests import (
+    run_cov_test,
+    run_int_test,
+)
 
 
 @logger.block(
@@ -86,7 +91,12 @@ def build_phase():
 )
 def post_build_phase():
     from .config import backup_prod_config
+    from .cf import delete_cloudformation_stack
+    from .lbd import delete_lambda_app
 
     with logger.nested():
         # Backup prod config
         backup_prod_config()
+
+        delete_lambda_app()
+        delete_cloudformation_stack()

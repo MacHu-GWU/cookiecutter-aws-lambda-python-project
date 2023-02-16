@@ -9,16 +9,16 @@ from .runtime import IS_LOCAL, IS_CI, IS_LAMBDA
 # environment aware boto session manager
 if IS_LAMBDA:  # put production first
     bsm = BotoSesManager(
-        region_name="us-east-1",
+        region_name="{{ cookiecutter.aws_region }}",
     )
 elif IS_LOCAL:
     bsm = BotoSesManager(
-        profile_name="my_profile",
-        region_name="us-east-1",
+        profile_name="{{ cookiecutter.aws_profile }}",
+        region_name="{{ cookiecutter.aws_region }}",
     )
 elif IS_CI:
     bsm = BotoSesManager(
-        region_name="us-east-1",
+        region_name="{{ cookiecutter.aws_region }}",
     )
 else:  # pragma: no cover
     raise NotImplementedError

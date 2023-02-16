@@ -1,4 +1,4 @@
-__version__ = "0.1.1"
+__version__ = "{{ cookiecutter.semantic_version }}"
 
 # keep this ``if __name__ == "__main__"``, don't delete!
 # this is used by automation script to detect the project version

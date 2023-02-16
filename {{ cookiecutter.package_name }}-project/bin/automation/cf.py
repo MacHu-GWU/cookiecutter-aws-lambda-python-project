@@ -22,53 +22,21 @@ from {{ cookiecutter.package_name }}.iac.deploy import (
 from {{ cookiecutter.package_name }}.boto_ses import bsm
 
 from .git import (
-    IS_MASTER_BRANCH,
+    GIT_BRANCH_NAME,
     IS_CF_BRANCH,
+    IS_INT_BRANCH,
     IS_RELEASE_BRANCH,
     IS_CLEAN_UP_BRANCH,
-    IS_PR_MERGE_EVENT,
-    IS_PR_SOURCE_CF_BRANCH,
-    IS_PR_TARGET_MASTER_BRANCH,
+    COMMIT_MESSAGE_HAS_CF,
 )
 from .runtime import IS_CI
 from .logger import logger
 from .emoji import Emoji
-from .env import EnvEnum, CURRENT_ENV
-
-
-def do_we_deploy_cf(env_name: str) -> bool:
-    """
-    Check if we should deploy AWS Cloudformation template.
-    """
-    env_name = EnvEnum.ensure_str(env_name)
-
-    # always deploy cloudformation in CI when it is a
-    # PR Merge from cf branch to main branch
-    if (IS_CI and IS_PR_MERGE_EVENT) and (
-        IS_PR_TARGET_MASTER_BRANCH and IS_PR_SOURCE_CF_BRANCH
-    ):
-        return True
-
-    if env_name in [EnvEnum.dev.value, EnvEnum.int.value]:
-        if IS_MASTER_BRANCH or IS_CF_BRANCH:
-            return True
-        else:
-            logger.info(
-                f"{Emoji.red_circle} don't deploy CloudFormation, "
-                f"we only deploy CloudFormation in {env_name!r} env "
-                "from a 'cf' branch or 'master' branch"
-            )
-            return False
-    elif env_name == EnvEnum.prod:
-        if IS_RELEASE_BRANCH:
-            return True
-        else:
-            logger.info(
-                f"{Emoji.red_circle} don't deploy CloudFormation "
-                f"we only deploy CloudFormation in {env_name!r} env "
-                "from a 'release' branch"
-            )
-            return False
+from .env import CURRENT_ENV
+from .cf_rule import (
+    do_we_deploy_cf,
+    do_we_delete_cf,
+)
 
 
 @logger.block(
@@ -83,7 +51,17 @@ def deploy_cloudformation_stack(
 ):
     try:
         if check:
-            if do_we_deploy_cf(env_name) is False:
+            if (
+                do_we_deploy_cf(
+                    env_name=env_name,
+                    is_ci_runtime=IS_CI,
+                    branch_name=GIT_BRANCH_NAME,
+                    is_cf_branch=IS_CF_BRANCH,
+                    is_int_branch=IS_INT_BRANCH,
+                    is_release_branch=IS_RELEASE_BRANCH,
+                )
+                is False
+            ):
                 return
         stack_name = _deploy_cloudformation_stack(env_name)
         logger.info(f"{Emoji.succeeded} Deploy CloudFormation stack succeeded!")
@@ -126,20 +104,6 @@ def deploy_cloudformation_stack(
         raise e
 
 
-def do_we_delete_cf(env_name: str = CURRENT_ENV) -> bool:
-    """
-    Check if we should delete AWS Cloudformation template.
-    """
-    if IS_CLEAN_UP_BRANCH:
-        return True
-    else:
-        logger.info(
-            f"{Emoji.red_circle} don't delete CloudFormation, "
-            f"we only delete CloudFormation from a 'cleanup' branch"
-        )
-        return False
-
-
 @logger.block(
     msg="Delete CloudFormation Stack",
     start_emoji=f"{Emoji.delete} {Emoji.cloudformation}",
@@ -152,7 +116,15 @@ def delete_cloudformation_stack(
 ):
     try:
         if check:
-            if do_we_delete_cf(env_name) is False:
+            if (
+                do_we_delete_cf(
+                    env_name=env_name,
+                    is_ci_runtime=IS_CI,
+                    is_clean_up_branch=IS_CLEAN_UP_BRANCH,
+                    commit_message_has_cf=COMMIT_MESSAGE_HAS_CF,
+                )
+                is False
+            ):
                 return
         stack_name = _delete_cloudformation_stack(env_name)
         logger.info(f"{Emoji.succeeded} Delete CloudFormation stack succeeded!")

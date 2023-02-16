@@ -28,20 +28,28 @@ install-doc: ## Install Document Dependencies
 	python ./bin/s02_4_pip_install_doc.py
 
 
+install-automation: ## Install Document Dependencies
+	python ./bin/s02_5_pip_install_automation.py
+
+
 install-all: ## Install All Dependencies
-	python ./bin/s02_5_pip_install_all.py
+	python ./bin/s02_6_pip_install_all.py
 
 
 poetry-export: ## Export requirements-*.txt from poetry.lock file
-	python ./bin/s02_6_poetry_export.py
+	python ./bin/s02_7_poetry_export.py
 
 
 poetry-lock: ## Resolve dependencies using poetry, update poetry.lock file
-	python ./bin/s02_7_poetry_lock.py
+	python ./bin/s02_8_poetry_lock.py
 
 
 find-env: ## Find the environment that match the current runtime and git branch
-	python ./bin/s02_8_find_env.py
+	python ./bin/s02_9_find_env.py
+
+
+show-env-info: ## Show Runtime, Environment and Git info
+	python ./bin/s02_10_show_runtime_env_git_info.py
 
 
 test: install install-test test-only ## ** Run test
@@ -55,6 +63,13 @@ cov: install install-test cov-only ## ** Run code coverage test
 
 
 cov-only: ## Run code coverage test without checking test dependencies
+	./.venv/bin/python ./bin/s03_2_run_cov_test.py
+
+
+int: install install-test int-only ## ** Run integration test
+
+
+int-only: ## Run integration test without checking test dependencies
 	./.venv/bin/python ./bin/s03_2_run_cov_test.py
 
 
