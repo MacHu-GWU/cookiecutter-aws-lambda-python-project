@@ -70,7 +70,7 @@ int: install install-test int-only ## ** Run integration test
 
 
 int-only: ## Run integration test without checking test dependencies
-	./.venv/bin/python ./bin/s03_2_run_cov_test.py
+	./.venv/bin/python ./bin/s03_3_run_int_test.py
 
 
 deploy-cf: ## Deploy CloudFormation
