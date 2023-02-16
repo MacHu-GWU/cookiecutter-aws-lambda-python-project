@@ -23,7 +23,7 @@ class IamMixin:
         self.rg1_iam = cf.ResourceGroup("rg1_iam")
 
         # declare policy statements
-        stat_parameter_store = {
+        self.stat_parameter_store = {
             "Effect": "Allow",
             "Action": "ssm:GetParameter",
             "Resource": cf.Sub(
@@ -36,7 +36,7 @@ class IamMixin:
             ),
         }
 
-        stat_s3_bucket_read = {
+        self.stat_s3_bucket_read = {
             "Effect": "Allow",
             "Action": [
                 "s3:ListBucket",
@@ -50,7 +50,7 @@ class IamMixin:
             ],
         }
 
-        stat_s3_bucket_write = {
+        self.stat_s3_bucket_write = {
             "Effect": "Allow",
             "Action": [
                 "s3:PutObject",
@@ -89,14 +89,6 @@ class IamMixin:
         )
         self.rg1_iam.add(self.output_iam_role_lambda_arn)
 
-        statement = self.encode_statement(
-            [
-                stat_parameter_store,
-                stat_s3_bucket_read,
-                stat_s3_bucket_write,
-            ]
-        )
-
         self.iam_inline_policy_for_lambda = iam.Policy(
             "IamInlinePolicyForLambda",
             rp_PolicyName=cf.Sub(
@@ -106,7 +98,13 @@ class IamMixin:
                     aws_region=cf.AWS_REGION,
                 )
             ),
-            rp_PolicyDocument={"Version": "2012-10-17", "Statement": statement},
+            rp_PolicyDocument=self.encode_policy_document(
+               [
+                    self.stat_parameter_store,
+                    self.stat_s3_bucket_read,
+                    self.stat_s3_bucket_write,
+                ]
+            ),
             p_Roles=[
                 self.iam_role_for_lambda.ref(),
             ],
