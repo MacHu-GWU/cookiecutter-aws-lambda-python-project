@@ -17,7 +17,10 @@ from ..runtime import IS_CI
 from .define import Stack
 
 
-def deploy_cloudformation_stack(env_name: str) -> str:
+def deploy_cloudformation_stack(
+    env_name: str,
+    dry_run: bool = True,
+) -> str:
     """
     Deploy (Create / Update) CloudFormation Stack using ChangeSet.
 
@@ -40,22 +43,23 @@ def deploy_cloudformation_stack(env_name: str) -> str:
         mode_overwrite=True,
     )
 
-    cf_env = cf.Env(bsm=bsm)
+    if dry_run is False:
+        cf_env = cf.Env(bsm=bsm)
 
-    cf_env.deploy(
-        stack_name=stack.stack_name,
-        template=tpl,
-        tags=dict(
-            ProjectName=env.project_name,
-            EnvName=env.env_name,
-        ),
-        bucket=config.env.s3dir_artifacts.bucket,
-        prefix=config.env.s3dir_cloudformation_templates.key,
-        include_named_iam=True,
-        skip_prompt=True,
-        timeout=120,
-        change_set_timeout=120,
-    )
+        cf_env.deploy(
+            stack_name=stack.stack_name,
+            template=tpl,
+            tags=dict(
+                ProjectName=env.project_name,
+                EnvName=env.env_name,
+            ),
+            bucket=config.env.s3dir_artifacts.bucket,
+            prefix=config.env.s3dir_cloudformation_templates.key,
+            include_named_iam=True,
+            skip_prompt=True,
+            timeout=120,
+            change_set_timeout=120,
+        )
 
     return stack.stack_name
 

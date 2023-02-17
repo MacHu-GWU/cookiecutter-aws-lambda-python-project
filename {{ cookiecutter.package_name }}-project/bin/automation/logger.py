@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from rich.console import Console
+
 from .nested_logger import NestedLogger
 from .emoji import Emoji
 
@@ -23,3 +25,5 @@ logger = Logger(
     name="automation",
     log_format="%(message)s",
 )
+
+console = Console()

@@ -15,6 +15,7 @@ from pathlib import Path
 
 from .pyproject import pyproject, path_pyproject_toml
 
+dir_home = Path.home()
 dir_project_root = Path(__file__).absolute().parent.parent.parent
 
 assert dir_project_root.joinpath("Makefile").exists() is True
@@ -69,6 +70,13 @@ path_poetry_lock_hash_json = dir_project_root / ".poetry-lock-hash.json"
 # Env Related
 # ------------------------------------------------------------------------------
 path_current_env_name_json = dir_project_root / ".current-env-name.json"
+
+# ------------------------------------------------------------------------------
+# Config Related
+# ------------------------------------------------------------------------------
+dir_config = dir_project_root / "config"
+path_config_json = dir_config / "config.json"
+path_secret_config_json = dir_home / ".projects" / pyproject.package_name / "config-secret.json"
 
 # ------------------------------------------------------------------------------
 # CloudFormation Related

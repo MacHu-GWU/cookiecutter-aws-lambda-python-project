@@ -63,7 +63,7 @@ def deploy_cloudformation_stack(
                 is False
             ):
                 return
-        stack_name = _deploy_cloudformation_stack(env_name)
+        stack_name = _deploy_cloudformation_stack(env_name, dry_run=False)
         logger.info(f"{Emoji.succeeded} Deploy CloudFormation stack succeeded!")
         # in CI, post the cloudformation stack url to the PR comment if possible
         if IS_CI:

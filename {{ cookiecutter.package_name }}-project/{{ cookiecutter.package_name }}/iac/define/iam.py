@@ -75,7 +75,7 @@ class IamMixin:
                 data=dict(
                     prefix=self.env.prefix_name_snake,
                     aws_region=cf.AWS_REGION,
-                )
+                ),
             ),
             p_ManagedPolicyArns=[
                 cf.helpers.iam.AwsManagedPolicy.AWSLambdaBasicExecutionRole,
@@ -96,10 +96,10 @@ class IamMixin:
                 data=dict(
                     prefix=self.env.prefix_name_snake,
                     aws_region=cf.AWS_REGION,
-                )
+                ),
             ),
             rp_PolicyDocument=self.encode_policy_document(
-               [
+                [
                     self.stat_parameter_store,
                     self.stat_s3_bucket_read,
                     self.stat_s3_bucket_write,

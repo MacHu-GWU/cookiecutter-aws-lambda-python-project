@@ -4,6 +4,10 @@ help: ## ** Show this help message
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-40s\033[0m %s\n", $$1, $$2}'
 
 
+info: ## ** Show Project Information
+	python ./bin/s00_show_project_info.py
+
+
 venv-create: ## ** Create Virtual Environment
 	python ./bin/s01_2_virtualenv_venv_create.py
 
