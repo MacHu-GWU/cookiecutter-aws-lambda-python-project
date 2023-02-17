@@ -40,6 +40,7 @@ def run_unit_test(
     if check:
         if (
             do_we_run_unit_test(
+                is_ci_runtime=IS_CI,
                 branch_name=GIT_BRANCH_NAME,
                 is_master_branch=IS_MASTER_BRANCH,
                 is_feature_branch=IS_FEATURE_BRANCH,
