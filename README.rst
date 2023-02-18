@@ -18,8 +18,8 @@ Or, you can use a specific released version, you can find `full list of release 
 
     # use specific version
     cookiecutter https://github.com/MacHu-GWU/cookiecutter-aws-lambda-python-project --checkout tags/${version}
-    # for example (v4 is the latest as of 2023-02-17)
-    cookiecutter https://github.com/MacHu-GWU/cookiecutter-aws-lambda-python-project --checkout tags/v4
+    # for example (v5 is the latest as of 2023-02-18)
+    cookiecutter https://github.com/MacHu-GWU/cookiecutter-aws-lambda-python-project --checkout tags/v5
 
 Then fill in some information::
 
