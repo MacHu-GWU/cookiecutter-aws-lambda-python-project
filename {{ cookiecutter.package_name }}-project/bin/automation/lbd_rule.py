@@ -17,7 +17,7 @@ def do_we_build_lambda_layer(
         else:
             logger.info(
                 f"{Emoji.red_circle} don't build Lambda layer, "
-                f"we only build layer from CI environment on layer branch, "
+                f"we only build layer from CI environment on a 'layer' branch, "
                 f"now we are on {branch_name!r} branch."
             )
             return False
@@ -36,7 +36,7 @@ def do_we_publish_lambda_layer(
         else:
             logger.info(
                 f"{Emoji.red_circle} don't publish layer, "
-                f"we only publish layer from CI environment on layer branch, "
+                f"we only publish layer from CI environment on a 'layer' branch, "
                 f"now we are on {branch_name!r} branch."
             )
             return False
@@ -64,7 +64,7 @@ def do_we_deploy_lambda(
             logger.info(
                 f"{Emoji.red_circle} don't deploy lambda app, "
                 f"we only deploy lambda app from CI environment on "
-                f"master, lambda or release branch, "
+                f"'lambda', 'int' or 'release' branch, "
                 f"now we are on {branch_name!r} branch.",
             )
             return False
@@ -72,7 +72,7 @@ def do_we_deploy_lambda(
         if env_name == EnvEnum.prod.value:
             user_input = input(
                 f"you are trying to deploy Lambda to {EnvEnum.prod.value!r} locally, "
-                f"enter 'YES' to confirm!"
+                f"enter 'YES' to confirm: "
             )
             if user_input.strip() == "YES":
                 return True

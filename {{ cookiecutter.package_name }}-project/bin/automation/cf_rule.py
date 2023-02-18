@@ -38,7 +38,7 @@ def _do_we_deploy_cf_in_local(
         else:
             logger.info(
                 f"{Emoji.red_circle} don't deploy CloudFormation. "
-                f"on {EnvEnum.dev.value!r} and {EnvEnum.int.value} env, "
+                f"on {EnvEnum.dev.value!r} and {EnvEnum.int.value!r} env, "
                 "we only deploy CloudFormation from a 'cf' or 'int' or 'release' branch, "
                 f"now it is {env_name!r} env and {branch_name!r} branch."
             )
@@ -47,7 +47,7 @@ def _do_we_deploy_cf_in_local(
         if is_release_branch:
             user_input = input(
                 f"you are trying to deploy CloudFormation to {EnvEnum.prod.value!r} locally, "
-                f"enter 'YES' to confirm!"
+                f"enter 'YES' to confirm: "
             )
             if user_input.strip() == "YES":
                 return True

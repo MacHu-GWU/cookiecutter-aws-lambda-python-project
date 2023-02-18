@@ -30,7 +30,7 @@ def _do_we_run_unit_test_in_ci(
         return True
     else:
         logger.info(
-            f"{Emoji.red_circle} don't run unit test, we only run unit test on "
+            f"{Emoji.red_circle} don't run unit test, we only run unit test on a "
             f"'master', 'feature', 'lambda', 'ecr', 'int' branch in CI, "
             f"we are now on {branch_name!r} branch"
         )
@@ -74,7 +74,7 @@ def _do_we_run_int_test_in_ci(
     else:
         logger.info(
             f"{Emoji.red_circle} don't run integration test, "
-            f"we only run integration test on 'int' branch in CI, "
+            f"we only run integration test on a 'int' branch in CI, "
             f"we are now on {branch_name!r} branch."
         )
         return False
