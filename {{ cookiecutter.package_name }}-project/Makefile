@@ -32,7 +32,7 @@ install-doc: ## Install Document Dependencies
 	python ./bin/s02_4_pip_install_doc.py
 
 
-install-automation: ## Install Document Dependencies
+install-automation: ## Install Dependencies for Automation Scripts
 	python ./bin/s02_5_pip_install_automation.py
 
 
