@@ -58,12 +58,3 @@ Now we want to check in the code skeleton to your Git repository. You can use an
 4. Refresh the AWS CodeCommit Console, you should see the code skeleton in the repo.
 
 .. image:: ./images/after-check-in-code-skeleton.png
-
-
-pip3.8 install "poetry>=1.2.0"
-pip3.8 install -r requirements-automation.txt
-
-make info
-make venv-create
-make install-all
-source ./.venv/bin/activate
