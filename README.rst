@@ -1,6 +1,27 @@
-``aws-lambda-python-project``
+``cookiecutter-aws-lambda-python-project``
 ==============================================================================
-This is a sample AWS Lambda Python project template with production ready set up. You can easily generate a project skeleton for your own project.
+This is an AWS Lambda Python project template with production ready setup. You can easily generate a folder structure as a foundation, then plugin your business code, then go to production.
+
+Best practices and automation features included in this template:
+
+- Multi environments (dev, test, int, preprod, prod, etc ...) config management, host your sensitive config data in AWS SSM Parameter Store.
+- Multi AWS Account / multi AWS Region deployment automation.
+- Infrastructure as code development, testing and deployment automation.
+- Unit test, code coverage test automation.
+- Unit test for AWS Lambda without deployment best practice.
+- Integration test best practice and automation.
+- Lambda layer building automation.
+- Add lambda function deployment automation, manage large number of Lambda Function, event source mapping, API Gateway definition at scale.
+- Determinative dependencies management to ensure consistency of deployment (same input -> same output, bytes by bytes).
+- Versioned build artifacts management in S3, you have the full history of all versioned artifacts you have ever deployed.
+- Git branching and Git workflow best practice.
+- CI/CD integration with AWS CodeBuild, and you can use any other CI/CD platform (GitHub Actions, Jenkins, CircleCI, GitLab pipeline, BitBucket Pipeline, etc ...)
+- Immutable deployment, every deployment is a new version.
+- Capability to rollback to any historical release.
+
+Disclaimer:
+
+All the best practice used in this repo is based on my career experience, and my personal opinion. I have done over 50+ AWS microservice projects in dev and 10+ projects in production environments. It is the best practice I am using for years. In average, it took me around months of work to setup a production ready git repo with proper CI/CD strategy. This project template saves me efforts to setup the DevOps automation, and allows me to focus on the business logic, and greatly reduces the releasing cycle. In the three most recent production projects, it took me around 1 week from scratch to production, and fastest releasing cycle is reduced to 1 day. Again, it is my personal best practice, please use it at your own risk.
 
 
 Usage
