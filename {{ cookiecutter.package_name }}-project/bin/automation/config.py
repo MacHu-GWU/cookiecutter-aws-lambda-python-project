@@ -4,12 +4,16 @@
 Config data related.
 """
 
+import os
 import pysecret
+
+from aws_codecommit import better_boto
 
 from {{ cookiecutter.package_name }}.config.init import config
 from {{ cookiecutter.package_name }}.boto_ses import bsm
 
 from .pyproject import pyproject
+from .runtime import IS_CI
 from .git import IS_RELEASE_BRANCH
 from .logger import logger
 from .emoji import Emoji
@@ -30,9 +34,9 @@ def do_we_backup_prod_config(env_name: str) -> bool:
 
 @logger.block(
     msg="Backup prod Config",
-    start_emoji=f"{Emoji.deploy} {Emoji.cloudformation}",
-    end_emoji=f"{Emoji.deploy} {Emoji.cloudformation}",
-    pipe=Emoji.cloudformation,
+    start_emoji=f"{Emoji.deploy} {Emoji.template}",
+    end_emoji=f"{Emoji.deploy} {Emoji.template}",
+    pipe=Emoji.template,
 )
 def backup_prod_config(
     env_name: str = CURRENT_ENV,
@@ -87,3 +91,41 @@ def backup_prod_config(
                 PackageVersion=pyproject.package_version,
             ),
         )
+        # in CI, post reply to the PR comment if possible
+        if IS_CI:
+            comment_id = os.environ.get("CI_DATA_COMMENT_ID", "")
+            if comment_id:
+                content = "\n".join(
+                    [
+                        f"{Emoji.succeeded} {Emoji.template} **Backup prod config for version {pyproject.package_version!r}**",
+                        f"",
+                        f"- review [config file]({s3path_prod_config.console_url})",
+                    ]
+                )
+                better_boto.post_comment_reply(
+                    bsm=bsm,
+                    in_reply_to=comment_id,
+                    content=content,
+                )
+    else:
+        logger.info(
+            f"{Emoji.red_circle} config file already exists, "
+            f"possibly it is not the first time releasing this version {pyproject.package_version!r}, "
+            f"might be a rollback or a re-release, config file update won't happen",
+            indent=1,
+        )
+        # in CI, post reply to the PR comment if possible
+        if IS_CI:
+            comment_id = os.environ.get("CI_DATA_COMMENT_ID", "")
+            if comment_id:
+                content = "\n".join(
+                    [
+                        f"{Emoji.template} prod config for version {pyproject.package_version!r} "
+                        "already exists, do nothing.",
+                    ]
+                )
+                better_boto.post_comment_reply(
+                    bsm=bsm,
+                    in_reply_to=comment_id,
+                    content=content,
+                )

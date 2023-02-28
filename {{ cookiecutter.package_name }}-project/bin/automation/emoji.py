@@ -16,6 +16,7 @@ class Emoji:
 
     relax = "🌴"
 
+    doc = "📔"
     test = "🧪"
     install = "💾"
     build = "🪜"

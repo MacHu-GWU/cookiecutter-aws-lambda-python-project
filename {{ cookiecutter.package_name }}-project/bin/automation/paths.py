@@ -55,6 +55,17 @@ dir_tests_int = dir_project_root / "tests_int"
 dir_htmlcov = dir_project_root / "htmlcov"
 
 # ------------------------------------------------------------------------------
+# Doc Related
+# ------------------------------------------------------------------------------
+dir_sphinx_doc = dir_project_root / "docs"
+dir_sphinx_doc_source = dir_sphinx_doc / "source"
+dir_sphinx_doc_source_conf_py = dir_sphinx_doc_source / "conf.py"
+dir_sphinx_doc_source_python_lib = dir_sphinx_doc_source / pyproject.package_name
+dir_sphinx_doc_build = dir_sphinx_doc / "build"
+dir_sphinx_doc_build_html = dir_sphinx_doc_build / "html"
+path_sphinx_doc_build_html_index = dir_sphinx_doc_build_html / "index.html"
+
+# ------------------------------------------------------------------------------
 # Poetry Related
 # ------------------------------------------------------------------------------
 path_requirements_main = dir_project_root / "requirements-main.txt"

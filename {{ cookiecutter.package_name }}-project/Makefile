@@ -32,7 +32,7 @@ install-doc: ## Install Document Dependencies
 	python ./bin/s02_4_pip_install_doc.py
 
 
-install-automation: ## Install Dependencies for Automation Scripts
+install-automation: ## Install Dependencies for Automation Script
 	python ./bin/s02_5_pip_install_automation.py
 
 
@@ -75,6 +75,14 @@ int: install install-test int-only ## ** Run integration test
 
 int-only: ## Run integration test without checking test dependencies
 	./.venv/bin/python ./bin/s03_3_run_int_test.py
+
+
+build-doc: install install-doc ## Build documentation website locally
+	./.venv/bin/python ./bin/s03_6_build_doc.py
+
+
+view-doc: ## View documentation website locally
+	./.venv/bin/python ./bin/s03_7_view_doc.py
 
 
 deploy-cf: ## Deploy CloudFormation

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+import json
 from config_patterns.jsonutils import json_loads
 
+from ..logger import logger
 from ..paths import path_config_json, path_config_secret_json
 from ..runtime import IS_LOCAL, IS_CI, IS_LAMBDA
 from ..boto_ses import bsm
@@ -10,6 +12,24 @@ from ..boto_ses import bsm
 from .define import EnvEnum, Env, Config
 
 if IS_LOCAL:
+    # ensure that the config-secret.json file exists
+    # it should be at the ${HOME}/.projects/{{ cookiecutter.package_name }}/config-secret.json
+    if not path_config_secret_json.exists():  # pragma: no cover
+        path_config_secret_json.parent.mkdir(parents=True, exist_ok=True)
+        path_config_secret_json.write_text(
+            json.dumps(
+                {
+                    "shared": {},
+                    "envs": {
+                        "dev": {"password": "dev.password"},
+                        "int": {"password": "int.password"},
+                        "prod": {"password": "prod.password"},
+                    },
+                },
+                indent=4,
+            )
+        )
+
     # read non-sensitive config and sensitive config from local file system
     config = Config.read(
         env_class=Env,
