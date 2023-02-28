@@ -15,41 +15,56 @@ Backlog (TODO)
 **Miscellaneous**
 
 
-0.3.2 (2023-02-27)
+v6 (TODO)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+v5 (2023-02-18)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Minor Improvements**
 
-- improve the error message when the ``config_pattern.patterns.multi_env_json.BaseConfig.get_env`` method failed due to the config definition and config data mismatch.
+- Improve README.rst document
+- Improve logging message
 
 
-0.3.1 (2023-02-13)
+v4 (2023-02-17)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Minor Improvements**
 
-- now depends on ``pysecret >= 2.2.2``
+- improve SDLC document
 
 **Bugfixes**
 
-- fix a bug that the ``bsm`` argument is missing
+- Fix a bug in "run unit test" automation script
 
 
-0.2.2 (2023-02-07)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-**Bugfixes**
-
-- fix a bug that multi environment json pattern cannot automatically prepend a prefix when project name starts with "aws" or "ssm".
-
-
-0.2.1 (2023-02-07)
+v3 (2023-02-16)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
-- multi environment json pattern now can delete configs.
+- add SDLC doc
+- add IAC unit test
+- add ``make info`` command
+- add ``semantic_version``, ``aws_profile``, ``aws_account_id``, ``aws_region`` to template parameters
 
 
-0.1.1 (2023-02-04)
+v2 (2023-02-13)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
 - First release.
-- add multi environment json pattern.
+- add multi environment config management
+- add infrastructure as code automation
+- add lambda layer building automation
+- add lambda function deployment automation
+- add unit test automation
+- add integration test automation
+- add determinative dependencies management
+- add versioned build artifacts management
+- add multi AWS Account deployment automation
+- add immutable deployment
+- add rollback to historical release automation
+
+
+v1 (Yanked) (2023-02-12)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
