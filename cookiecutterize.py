@@ -2,7 +2,7 @@
 
 """
 The upstream concrete repo is ``aws_python-project``. This script can convert
-the concrete repo into a project template
+the concrete repo into a project template.
 """
 
 import shutil
