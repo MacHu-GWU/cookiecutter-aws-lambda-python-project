@@ -1,5 +1,10 @@
+.. image:: https://readthedocs.org/projects/cookiecutter-aws-lambda-python/badge/?version=latest
+    :target: https://cookiecutter-aws-lambda-python.readthedocs.io/index.html
+    :alt: Documentation Status
+
 ``cookiecutter-aws-lambda-python-project``
 ==============================================================================
+`FULL DOCUMENT IS HERE <https://cookiecutter-aws-lambda-python.readthedocs.io/index.html>`_
 
 
 Summary

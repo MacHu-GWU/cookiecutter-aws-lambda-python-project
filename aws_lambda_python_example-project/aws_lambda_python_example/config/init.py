@@ -14,6 +14,9 @@ from .define import EnvEnum, Env, Config
 if IS_LOCAL:
     # ensure that the config-secret.json file exists
     # it should be at the ${HOME}/.projects/aws_lambda_python_example/config-secret.json
+    # this code block is only used to onboard first time user of this
+    # project template. Once you know about how to handle the config-secret.json file,
+    # you can delete this code block.
     if not path_config_secret_json.exists():  # pragma: no cover
         path_config_secret_json.parent.mkdir(parents=True, exist_ok=True)
         path_config_secret_json.write_text(
