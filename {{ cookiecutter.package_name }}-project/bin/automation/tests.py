@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import subprocess
 
 from .paths import (
@@ -22,6 +23,7 @@ from .git import (
 )
 from .logger import logger
 from .emoji import Emoji
+from .comment import post_comment_reply
 from .tests_rule import (
     do_we_run_unit_test,
     do_we_run_int_test,
@@ -63,8 +65,10 @@ def run_unit_test(
         ):  # ensure current dir is the project root
             subprocess.run(args, check=True)
         logger.info(f"{Emoji.start_timer} Unit Test Succeeded!")
+        _post_comment_reply(test_type="Unit Test", succeeded=True, is_ci=IS_CI)
     except Exception as e:
         logger.error(f"{Emoji.error} Unit Test Failed!")
+        _post_comment_reply(test_type="Unit Test", succeeded=False, is_ci=IS_CI)
         raise e
 
 
@@ -108,8 +112,12 @@ def run_cov_test(
         ):  # ensure current dir is the project root
             subprocess.run(args, check=True)
         logger.info(f"{Emoji.succeeded} Code Coverage Test Succeeded!")
+        _post_comment_reply(test_type="Code Coverage Test", succeeded=True, is_ci=IS_CI)
     except Exception as e:
         logger.error(f"{Emoji.error} Code Coverage Test Failed!")
+        _post_comment_reply(
+            test_type="Code Coverage Test", succeeded=False, is_ci=IS_CI
+        )
         raise e
 
 
@@ -144,6 +152,27 @@ def run_int_test(
         ):  # ensure current dir is the project root
             subprocess.run(args, check=True)
         logger.info(f"{Emoji.succeeded} Integration Test Succeeded!")
+        _post_comment_reply(test_type="Integration Test", succeeded=True, is_ci=IS_CI)
     except Exception as e:
         logger.error(f"{Emoji.error} Integration Test Failed!")
+        _post_comment_reply(test_type="Integration Test", succeeded=False, is_ci=IS_CI)
         raise e
+
+
+def _post_comment_reply(
+    test_type: str,
+    succeeded: bool,
+    is_ci: bool,
+):
+    """
+    Post a comment reply to the CodeCommit PR thread when test is succeeded or failed.
+
+    :param test_type: "Unit Test", "Code Coverage Test", "Integration Test"
+    :param succeeded: we use this flag to generate the message
+    :param is_ci: we only post reply from CI build job
+    """
+    if succeeded:
+        message = f"{Emoji.succeeded} **{test_type} succeeded**"
+    else:
+        message = f"{Emoji.failed} **{test_type} failed**"
+    post_comment_reply(message=message, is_ci=is_ci)
