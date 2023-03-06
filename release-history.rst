@@ -15,7 +15,7 @@ Backlog (TODO)
 **Miscellaneous**
 
 
-v6 (TODO)
+v6 (2023-03-06)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
