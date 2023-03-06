@@ -16,7 +16,7 @@ dir_output = dir_here.joinpath("aws_lambda_python_example-project")
 shutil.rmtree(dir_output, ignore_errors=True)
 cookiecutter(
     template=f"{dir_here}",
-    output_dir=f"{dir_output}",
+    output_dir=f"{dir_here}",
     extra_context={
         "package_name": "aws_lambda_python_example",
         "author_name": "Firstname Lastname",
