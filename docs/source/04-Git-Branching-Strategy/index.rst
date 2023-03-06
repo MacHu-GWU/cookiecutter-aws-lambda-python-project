@@ -4,31 +4,31 @@ A common challenge is that the CI system may not have the capability to run a se
 
 In this project, we follow the semantic git branching convention and used different branch names for different purposes. Additionally, the CI system relies on these branch names to identify what to run and what not to run.
 
-Below is the detailed CI/CD build job workflow that runs only on specific Git branches. The column header is the semantic branch name, it follows the convention ``${semantic_name}/${description}``. For example, ``feature/add-an-awesome-feature`` is a feature branch. The row index is the workflow action.
+Below is the detailed CI/CD build job workflow that runs only on specific Git branches. The column header is the semantic branch name, it follows the convention ``${semantic_name}/${description}``. For example, ``feature/add-an-awesome-feature`` is a feature branch. The row index is the workflow action::
 
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Action👇 Git Branch 👉      | feature | fix | cf | layer | lambda | int | release | cleanup |
-+================================+=========+=====+====+=======+========+=====+=========+=========+
-|        Create Virtualenv       |    ✅    |  ✅  |  ✅ |   ✅   |    ✅   |  ✅  |    ✅    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Install Dependencies      |    ✅    |  ✅  |  ✅ |   ✅   |    ✅   |  ✅  |    ✅    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|     Run Code Coverage Test     |    ✅    |  ✅  |  ✅ |   ❌   |    ✅   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Deploy CloudFormation     |    ❌    |  ❌  |  ✅ |   ❌   |    ❌   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-| Build New Lambda Layer Version |    ❌    |  ❌  |  ❌ |   ✅   |    ❌   |  ❌  |    ❌    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|        Deploy Lambda App       |    ❌    |  ❌  |  ❌ |   ❌   |    ✅   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Run Integration Test      |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|       Backup Prod Config       |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|        Delete Lambda App       |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ❌    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Delete CloudFormation     |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ❌    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |      Action👇 Git Branch 👉      | feature | fix | cf | layer | lambda | int | release | cleanup |
+    +================================+=========+=====+====+=======+========+=====+=========+=========+
+    |        Create Virtualenv       |    ✅    |  ✅  |  ✅ |   ✅   |    ✅   |  ✅  |    ✅    |    ✅    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |      Install Dependencies      |    ✅    |  ✅  |  ✅ |   ✅   |    ✅   |  ✅  |    ✅    |    ✅    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |     Run Code Coverage Test     |    ✅    |  ✅  |  ✅ |   ❌   |    ✅   |  ✅  |    ✅    |    ❌    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |      Deploy CloudFormation     |    ❌    |  ❌  |  ✅ |   ❌   |    ❌   |  ✅  |    ✅    |    ❌    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    | Build New Lambda Layer Version |    ❌    |  ❌  |  ❌ |   ✅   |    ❌   |  ❌  |    ❌    |    ❌    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |        Deploy Lambda App       |    ❌    |  ❌  |  ❌ |   ❌   |    ✅   |  ✅  |    ✅    |    ❌    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |      Run Integration Test      |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ✅  |    ✅    |    ❌    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |       Backup Prod Config       |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ✅    |    ❌    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |        Delete Lambda App       |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ❌    |    ✅    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+    |      Delete CloudFormation     |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ❌    |    ✅    |
+    +--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
 
 This is implemented in our DevOps shell scripts for all workflow actions to determine whether they should be run or not. Below is a sample code that demonstrates how we determine whether to deploy infrastructure via the CloudFormation stack:
 
