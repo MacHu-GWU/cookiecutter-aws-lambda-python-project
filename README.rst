@@ -70,3 +70,5 @@ Then it will generate a Git repo folder structures like this:
     ./.venv/bin/python ./bin/s99_2_pre_build_phase.py
     ./.venv/bin/python ./bin/s99_3_build_phase.py
     ./.venv/bin/python ./bin/s99_4_post_build_phase.py
+
+We have an example project generated from this template `aws_lambda_python_example-project <./aws_lambda_python_example-project>`_. Please take a look at it.

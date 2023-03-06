@@ -17,6 +17,10 @@ Backlog (TODO)
 
 v6 (TODO)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- add ``make build-doc`` and ``make view-doc`` commands, use `Sphinx doc <https://www.sphinx-doc.org/en/master/>`_ to build project documentation site locally.
+- post reply to Pull Request thread when unit test / code coverage test / integration test succeeded or failed.
 
 
 v5 (2023-02-18)
