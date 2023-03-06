@@ -1,0 +1,23 @@
+{
+    "shared": {
+        "project_name": "aws_lambda_python_example",
+        "s3uri_artifacts": "s3://111122223333-us-east-1-artifacts/projects/aws_lambda_python_example/"
+    },
+    "envs": {
+        "dev": {
+            "username": "dev.user",
+            "s3uri_source": "s3://111122223333-us-east-1-data/projects/aws_lambda_python_example/dev/source/",
+            "s3uri_target": "s3://111122223333-us-east-1-data/projects/aws_lambda_python_example/dev/target/"
+        },
+        "int": {
+            "username": "int.user",
+            "s3uri_source": "s3://111122223333-us-east-1-data/projects/aws_lambda_python_example/int/source/",
+            "s3uri_target": "s3://111122223333-us-east-1-data/projects/aws_lambda_python_example/int/target/"
+        },
+        "prod": {
+            "username": "prod.user",
+            "s3uri_source": "s3://111122223333-us-east-1-data/projects/aws_lambda_python_example/prod/source/",
+            "s3uri_target": "s3://111122223333-us-east-1-data/projects/aws_lambda_python_example/prod/target/"
+        }
+    }
+}

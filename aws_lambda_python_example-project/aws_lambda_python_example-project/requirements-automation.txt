@@ -1,0 +1,7 @@
+virtualenv
+tomli>=2.0.0
+fire==0.5.0
+rich==12.6.0
+colorama==0.4.6
+aws_codecommit==1.4.1
+aws_codebuild==1.2.1

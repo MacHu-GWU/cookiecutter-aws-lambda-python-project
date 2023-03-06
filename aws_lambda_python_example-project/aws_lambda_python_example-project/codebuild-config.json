@@ -1,0 +1,11 @@
+{
+    "jobs": [
+        {
+            "project_name": "aws_lambda_python_example-project",
+            "is_batch_job": false,
+            "buildspec": "",
+            "env_var": {
+            }
+        }
+    ]
+}

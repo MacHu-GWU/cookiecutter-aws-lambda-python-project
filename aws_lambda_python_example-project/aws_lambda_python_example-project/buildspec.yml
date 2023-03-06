@@ -1,0 +1,37 @@
+# Ref: https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
+#
+# Developer Note:
+#
+# as the best practice, we avoid complicated shell script logic in either
+# buildspec.yml file or in bash script. We do shell scripting in Python
+# From high level, except the "install phase", we need to manually install
+# additional dependencies to global python to run those shell scripts,
+# other phase we just run the corresponding Python shell script and
+# leave the complication there.
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      # install necessary dependencies to global python to run the automation scripts
+      - pip install poetry==1.2.2 --quiet --disable-pip-version-check
+      - pip install -r requirements-automation.txt --quiet --disable-pip-version-check
+      - python ./bin/s99_1_install_phase.py
+  pre_build:
+    commands:
+      - ./.venv/bin/python ./bin/s99_2_pre_build_phase.py
+  build:
+    commands:
+      - ./.venv/bin/python ./bin/s99_3_build_phase.py
+  post_build:
+    commands:
+      - ./.venv/bin/python ./bin/s99_4_post_build_phase.py
+
+cache:
+  paths:
+    - '/root/.cache/pip/**/*'
+    - '~/.cache/pip/**/*'
+    - '/root/.cache/pypoetry/**/*'
+    - '~/.cache/pypoetry/**/*'
