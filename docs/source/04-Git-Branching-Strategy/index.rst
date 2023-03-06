@@ -6,29 +6,143 @@ In this project, we follow the semantic git branching convention and used differ
 
 Below is the detailed CI/CD build job workflow that runs only on specific Git branches. The column header is the semantic branch name, it follows the convention ``${semantic_name}/${description}``. For example, ``feature/add-an-awesome-feature`` is a feature branch. The row index is the workflow action.
 
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|       Action / Git Branch      | feature | fix | cf | layer | lambda | int | release | cleanup |
-+================================+=========+=====+====+=======+========+=====+=========+=========+
-|        Create Virtualenv       |    ✅    |  ✅  |  ✅ |   ✅   |    ✅   |  ✅  |    ✅    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Install Dependencies      |    ✅    |  ✅  |  ✅ |   ✅   |    ✅   |  ✅  |    ✅    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|     Run Code Coverage Test     |    ✅    |  ✅  |  ✅ |   ❌   |    ✅   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Deploy CloudFormation     |    ❌    |  ❌  |  ✅ |   ❌   |    ❌   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-| Build New Lambda Layer Version |    ❌    |  ❌  |  ❌ |   ✅   |    ❌   |  ❌  |    ❌    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|        Deploy Lambda App       |    ❌    |  ❌  |  ❌ |   ❌   |    ✅   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Run Integration Test      |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ✅  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|       Backup Prod Config       |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ✅    |    ❌    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|        Delete Lambda App       |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ❌    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
-|      Delete CloudFormation     |    ❌    |  ❌  |  ❌ |   ❌   |    ❌   |  ❌  |    ❌    |    ✅    |
-+--------------------------------+---------+-----+----+-------+--------+-----+---------+---------+
+.. raw:: html
+
+    <style type="text/css">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+      font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+    .tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+    </style>
+    <table class="tg">
+    <thead>
+      <tr>
+        <th class="tg-c3ow">Action / Git Branch</th>
+        <th class="tg-c3ow">feature</th>
+        <th class="tg-c3ow">fix</th>
+        <th class="tg-c3ow">cf</th>
+        <th class="tg-c3ow">layer</th>
+        <th class="tg-c3ow">lambda</th>
+        <th class="tg-c3ow">int</th>
+        <th class="tg-c3ow">release</th>
+        <th class="tg-c3ow">cleanup</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="tg-c3ow">Create Virtualenv</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Install Dependencies</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Run Code Coverage Test</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Deploy CloudFormation</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Build New Lambda Layer Version</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Deploy Lambda App</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Run Integration Test</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Backup Prod Config</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Delete Lambda App</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+      </tr>
+      <tr>
+        <td class="tg-c3ow">Delete CloudFormation</td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">❌</span></td>
+        <td class="tg-c3ow"><span style="font-weight:var(--base-text-weight-normal, 400);font-style:normal">✅</span></td>
+      </tr>
+    </tbody>
+    </table>
 
 This is implemented in our DevOps shell scripts for all workflow actions to determine whether they should be run or not. Below is a sample code that demonstrates how we determine whether to deploy infrastructure via the CloudFormation stack:
 
