@@ -31,6 +31,7 @@ maker = Maker.new(
         "build",
         "dist",
         "htmlcov",
+        "docs/source/aws_python",
         # file
         ".coverage",
         "bin/tests.py",
