@@ -1,8 +1,8 @@
-Python Development Workflow
+Internal Enterprise Standard of AWS Python Project Development-Workflow
 ==============================================================================
 
 
-What and Why Development Workflow
+What Is And Why Need a Standard Development Workflow
 ------------------------------------------------------------------------------
 In a Python project, the development workflow is usually as follows:
 
@@ -20,10 +20,10 @@ Challenges 2 - Steep Learning Curve for New Team Members:
 
     Each step in the development workflow requires the developer to enter many CLI commands, some of which may have very long arguments that can be difficult to enter accurately. In addition, it is often necessary for developers to navigate to a specific directory in order to run the commands. This can be time-consuming, particularly for new team members who are onboarding the project, and it can also increase the risk of errors.
 
-Having an internal standard for development workflow can reduce communication burden, improve productivity and reduce the risk of errors. The development workflow introduced in this tutorial is primarily based on my career experiences. I have been doing Python development since 2008 and actively maintaining around 20+ open source Python projects with total two millions monthly downloads, delivered 10+ commercial projects to production with around 5k ~ 10k line of code in average. This development workflow is primarily focus on AWS + Lambda + Python styled microservice project, and I cannot say that it is the best practice. But, I am pretty sure this is not the worst workflow.
+Having an internal standard for development workflow can reduce communication burden, improve productivity and reduce the risk of errors. The development workflow introduced in this tutorial is primarily based on my personal experiences. I have been doing Python development since 2008 and actively maintaining around 20+ open source Python projects with total two millions monthly downloads. I have used this development workflow to iterate fast. But please feel free to use your own development workflow.
 
 
-THE recommended Development Workflow
+The Recommended Development Workflow
 ------------------------------------------------------------------------------
 First, let's install some dependencies for automation scripts. You need to install the following dependencies to your "User Python".
 
@@ -75,19 +75,8 @@ Also, the `official document <https://docs.python.org/3/library/venv.html#creati
 The automation script will parse the ``pyproject.toml`` file, and automatically create the virtualenv using the right Python version, at the right location.
 
 
-Determinative Dependencies Management
+Install Dependency
 ------------------------------------------------------------------------------
-Determinative dependencies is a software development best practice for production. It means that if the code is not changed, where ever, when ever you build the project, you get exactly the same results, bytes by bytes. For production ready project, this is a must-have feature to ensure software integrity and consistent delivery.
-
-Unfortunately, the most popular `pip install <https://pip.pypa.io/en/stable/>`_ is NOT determinative. It has the following defects:
-
-1. If you don't define the specific version of your dependencies, pip install may install latest version, which is changing over time.
-2. Even you defined the specific version of your dependencies, but dependency has more dependencies, it is not practical to defines the specific version for all of them.
-3. If your dependencies has conflict on the root dependency level or child dependency level, pip doesn't know how to resolve it.
-4. Even you use ``pip freeze`` command to export the specific version of all dependencies. But it doesn't do integrity check. Hacker may hack the public `pypi <https://pypi.org/>`_ repository and replace the version with malformed code. It may ruin your business and it has been happened many times already.
-
-`poetry <https://python-poetry.org/>`_ is one of the right tool can ensure determinative dependencies. Other alternatives includes `pdm <https://pdm.fming.dev/latest/>`_ (more powerful, adapt the latest Python standard, but a younger project), `pipenv <https://pipenv.pypa.io/en/latest/>`_ (older tool, worse performance, not doing work correctly, not recommended). You can read `this blog post <https://dev.to/frostming/a-review-pipenv-vs-poetry-vs-pdm-39b4>`_ for a comprehensive comparison.
-
 Run ``make poetry-lock`` to resolve the dependency tree based on your latest definition in ``pyproject.toml`` file. You should do this everytime you changed the ``pyproject.toml`` file:
 
 .. code-block:: bash
@@ -114,7 +103,7 @@ The following "workflow action" are related to dependency management. For local 
 
 Other Workflow Actions
 ------------------------------------------------------------------------------
-There are more helpful "workflow action" you can use in your development. However, the rest of them won't work at this moment because of the ``config-secret.json`` file issue.
+There are more helpful "workflow action" you can use in your development.
 
 - test: Run unit test
 - cov: Run code coverage test

@@ -19,3 +19,24 @@ From June 2020, `Python community start using pyproject.toml file for project de
 - automation: dependencies for DevOps automation scripts
 
 Everytime you changed the ``pyproject.toml``, you should run ``poetry lock`` or ``make poetry-lock`` to resolve the dependencies tree, and store the determinative results in the ``poetry.lock`` file and committed it to Git as a record. This allows us to rollback to a historical version of the dependencies if needed.
+
+.. code-block:: bash
+
+    make poetry-lock
+
+For local development, I usually run the ``make install-all`` command to install all dependencies at once. In the best practice, you should put dependencies for different purpose in different groups, and only install the dependencies you need:
+
+.. code-block:: bash
+
+    make install-all
+
+The following "workflow action" are related to dependency management. For local development, the most useful commands are ``make poetry-lock`` and ``make install-all``::
+
+    install                                  ** Install main dependencies and Package itself
+    install-dev                              Install Development Dependencies
+    install-test                             Install Test Dependencies
+    install-doc                              Install Document Dependencies
+    install-automation                       Install Automation Dependencies
+    install-all                              Install All Dependencies
+    poetry-export                            Export requirements-*.txt from poetry.lock file
+    poetry-lock                              Resolve dependencies using poetry, update poetry.lock file
