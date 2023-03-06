@@ -21,6 +21,7 @@ v6 (TODO)
 
 - add ``make build-doc`` and ``make view-doc`` commands, use `Sphinx doc <https://www.sphinx-doc.org/en/master/>`_ to build project documentation site locally.
 - post reply to Pull Request thread when unit test / code coverage test / integration test succeeded or failed.
+- add `dedicated documentation website <https://cookiecutter-aws-lambda-python.readthedocs.io/index.html>`_ for this project.
 
 
 v5 (2023-02-18)
